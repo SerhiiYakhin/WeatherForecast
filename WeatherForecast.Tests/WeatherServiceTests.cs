@@ -1,20 +1,22 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
+using WeatherForecast.Models;
 using WeatherForecast.Models.WeatherApiResponses.VisualCrossing;
 using WeatherForecast.Models.WeatherApiResponses.WeatherApi;
 using WeatherForecast.Models.WeatherApiResponses.WeatherBit;
 using WeatherForecast.Services;
+using Forecast = WeatherForecast.Models.WeatherApiResponses.WeatherApi.Forecast;
 
 namespace WeatherForecast.Tests;
 
 public class WeatherServiceTests
 {
-    private readonly Mock<IConfiguration> _configurationMock;
+    private readonly Mock<IOptions<ApiKeys>> _apiKeysMock;
     private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
     private readonly ILogger<WeatherService> _logger;
     private readonly WeatherService _weatherService;
@@ -22,9 +24,9 @@ public class WeatherServiceTests
     public WeatherServiceTests()
     {
         _httpClientFactoryMock = new Mock<IHttpClientFactory>();
-        _configurationMock = new Mock<IConfiguration>();
+        _apiKeysMock = new Mock<IOptions<ApiKeys>>();
         _logger = NullLogger<WeatherService>.Instance;
-        _weatherService = new WeatherService(_httpClientFactoryMock.Object, _configurationMock.Object, _logger);
+        _weatherService = new WeatherService(_httpClientFactoryMock.Object, _apiKeysMock.Object, _logger);
     }
 
     [Fact]
@@ -136,9 +138,13 @@ public class WeatherServiceTests
         _httpClientFactoryMock.Setup(f => f.CreateClient(It.Is<string>(n => n.Contains("VisualCrossing"))))
             .Returns(visualCrossingClient);
 
-        _configurationMock.Setup(c => c["APIKeys:WeatherApiKey"]).Returns("weather-api-key");
-        _configurationMock.Setup(c => c["APIKeys:WeatherBit"]).Returns("weatherbit-api-key");
-        _configurationMock.Setup(c => c["APIKeys:VisualCrossing"]).Returns("visualcrossing-api-key");
+        _apiKeysMock.Setup(k => k.Value)
+            .Returns(new ApiKeys
+        {
+            WeatherApiKey = "weather-api-key",
+            WeatherBit = "weatherbit-api-key",
+            VisualCrossing = "visualcrossing-api-key"
+        });
 
         // Act
         var forecasts = await _weatherService.GetForecastsAsync(date, city, country);
@@ -203,9 +209,13 @@ public class WeatherServiceTests
         _httpClientFactoryMock.Setup(f => f.CreateClient(It.Is<string>(n => n.Contains("VisualCrossing"))))
             .Returns(visualCrossingClient);
 
-        _configurationMock.Setup(c => c["APIKeys:WeatherApiKey"]).Returns("weather-api-key");
-        _configurationMock.Setup(c => c["APIKeys:WeatherBit"]).Returns("weatherbit-api-key");
-        _configurationMock.Setup(c => c["APIKeys:VisualCrossing"]).Returns("visualcrossing-api-key");
+        _apiKeysMock.Setup(k => k.Value)
+            .Returns(new ApiKeys
+            {
+                WeatherApiKey = "weather-api-key",
+                WeatherBit = "weatherbit-api-key",
+                VisualCrossing = "visualcrossing-api-key"
+            });
 
         // Act
         var forecasts = await _weatherService.GetForecastsAsync(date, city, country);

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Microsoft.Extensions.Options;
+using System.Net.Http;
 using WeatherForecast.Models;
 using WeatherForecast.Models.WeatherApiResponses.VisualCrossing;
 using WeatherForecast.Models.WeatherApiResponses.WeatherApi;
@@ -7,7 +8,7 @@ using Forecast = WeatherForecast.Models.Forecast;
 
 namespace WeatherForecast.Services;
 
-public class WeatherService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<WeatherService> logger) : IWeatherService
+public class WeatherService(IHttpClientFactory httpClientFactory, IOptions<ApiKeys> apiKeys, ILogger<WeatherService> logger) : IWeatherService
 {
     public async Task<IEnumerable<Forecast>> GetForecastsAsync(DateTime date, string city, string country)
     {
@@ -29,7 +30,7 @@ public class WeatherService(IHttpClientFactory httpClientFactory, IConfiguration
     {
         try
         {
-            var apiKey = configuration["APIKeys:WeatherApiKey"];
+            var apiKey = apiKeys.Value.WeatherApiKey;
             var client = httpClientFactory.CreateClient("WeatherApi");
             var response = await client.GetAsync($"https://api.weatherapi.com/v1/history.json?key={apiKey}&q={city}&dt={date:yyyy-MM-dd}");
 
@@ -69,7 +70,7 @@ public class WeatherService(IHttpClientFactory httpClientFactory, IConfiguration
     {
         try
         {
-            var apiKey = configuration["APIKeys:WeatherBit"];
+            var apiKey = apiKeys.Value.WeatherBit;
             var client = httpClientFactory.CreateClient("WeatherBit");
             var response = await client.GetAsync($"https://api.weatherbit.io/v2.0/history/daily?city={city}&start_date={date:yyyy-MM-dd}&end_date={date.AddDays(1):yyyy-MM-dd}&key={apiKey}");
 
@@ -109,7 +110,7 @@ public class WeatherService(IHttpClientFactory httpClientFactory, IConfiguration
     {
         try
         {
-            var apiKey = configuration["APIKeys:VisualCrossing"];
+            var apiKey = apiKeys.Value.VisualCrossing;
             var client = httpClientFactory.CreateClient("VisualCrossing");
             var response = await client.GetAsync($"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city}/{date:yyyy-MM-dd}?unitGroup=metric&key={apiKey}");
 

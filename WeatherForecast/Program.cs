@@ -1,4 +1,5 @@
 using WeatherForecast.ModelBinders;
+using WeatherForecast.Models;
 using WeatherForecast.Services;
 
 namespace WeatherForecast;
@@ -8,6 +9,11 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables();
 
         builder.Services.AddControllers(options =>
         {
@@ -20,6 +26,8 @@ public class Program
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.Configure<ApiKeys>(builder.Configuration.GetSection("APIKeys"));
 
         var app = builder.Build();
 
