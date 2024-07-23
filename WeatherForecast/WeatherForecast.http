@@ -1,0 +1,6 @@
+@WeatherForecast_HostAddress = http://localhost:5145
+
+GET {{WeatherForecast_HostAddress}}/weatherforecast?date=12-03-2024&country=USA&city=Chicago
+Accept: application/json
+
+###
