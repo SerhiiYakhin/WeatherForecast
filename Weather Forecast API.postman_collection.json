@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "e7f077cb-4825-4797-9f58-f4ffe9145cf5",
+		"name": "Weather Forecast API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11836710"
+	},
+	"item": [
+		{
+			"name": "WeatherForecast",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://weatherforecast-app-202407231837.ambitiousforest-f014f9b9.northeurope.azurecontainerapps.io/weatherforecast?date=2024-07-01&country=UA&city=Kyiv",
+					"protocol": "https",
+					"host": [
+						"weatherforecast-app-202407231837",
+						"ambitiousforest-f014f9b9",
+						"northeurope",
+						"azurecontainerapps",
+						"io"
+					],
+					"path": [
+						"weatherforecast"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2024-07-01"
+						},
+						{
+							"key": "country",
+							"value": "UA"
+						},
+						{
+							"key": "city",
+							"value": "Kyiv"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
