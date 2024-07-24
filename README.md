@@ -14,7 +14,7 @@ This is a .NET Core microservice that provides weather forecasts from multiple s
 
 ## Prerequisites
 
-- .NET 9.0 SDK
+- .NET 8.0 SDK
 - Docker (for containerization)
 
 ## Getting Started
